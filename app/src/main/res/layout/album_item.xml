@@ -5,7 +5,7 @@
     android:orientation="vertical">
 
     <ImageView
-        android:id="@+id/logo"
+        android:id="@+id/imgAlbum"
         android:layout_width="205dp"
         android:layout_height="205dp"
         android:contentDescription="@null"

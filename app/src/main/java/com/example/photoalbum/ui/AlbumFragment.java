@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -25,7 +26,7 @@ import java.util.ArrayList;
 
 public class AlbumFragment extends Fragment {
     ArrayList<String> images;
-    ArrayList<String> nameAlbum = new ArrayList<>();
+    ArrayList<String> nameAlbums = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -109,9 +110,15 @@ public class AlbumFragment extends Fragment {
                 pictureView = (ImageView) view;
             }
 
+            String data_item = images.get(i);
+            ImageView img = (ImageView) pictureView.findViewById(R.id.imgAlbum);
+
             Glide.with(context).load(images.get(i))
                     .placeholder(R.drawable.ic_launcher_foreground)
-                    .centerCrop().into(pictureView);
+                    .centerCrop().into(img);
+
+            TextView nameAlbum = (TextView) pictureView.findViewById(R.id.nameAlbum);
+            nameAlbum.setText(nameAlbums.get(i));
 
             return pictureView;
         }
