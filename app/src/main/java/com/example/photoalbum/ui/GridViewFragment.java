@@ -27,7 +27,7 @@ public class GridViewFragment extends Fragment {
         requireActivity().setTitle(R.string.nav_gallery);
         View layout = inflater.inflate(R.layout.fragment_gallery, container, false);
 
-        GridView gridView = (GridView) layout.findViewById(R.id.gridview);
+        GridView gridView = (GridView) layout.findViewById(R.id.gridviewGallery);
         gridView.setAdapter(new ImageAdapter(getActivity()));
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
