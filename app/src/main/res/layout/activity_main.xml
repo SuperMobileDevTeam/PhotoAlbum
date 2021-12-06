@@ -15,9 +15,22 @@
             layout="@layout/toolbar_main"
             android:id="@+id/toolbar"/>
         <FrameLayout
-            android:id="@+id/content_frame"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent">
+            <FrameLayout
+                android:id="@+id/content_frame"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            </FrameLayout>
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|bottom"
+                android:layout_margin="16dp"
+                android:src="@drawable/ic_baseline_camera_alt_24"
+                android:id="@+id/fabButton"
+                android:contentDescription="@string/camera"/>
+        </FrameLayout>
     </LinearLayout>
     
     <com.google.android.material.navigation.NavigationView
