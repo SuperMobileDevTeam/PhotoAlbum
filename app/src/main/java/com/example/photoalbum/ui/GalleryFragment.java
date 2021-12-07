@@ -1,6 +1,7 @@
 package com.example.photoalbum.ui;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,8 +19,10 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.photoalbum.ContentActivity;
 import com.example.photoalbum.R;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class GalleryFragment extends Fragment {
@@ -37,8 +40,14 @@ public class GalleryFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if(null != images && !images.isEmpty()) {
-                    Toast.makeText(getActivity(), "Position:" + i + " " + images.get(i),
-                            Toast.LENGTH_SHORT).show();
+                    /*Toast.makeText(getActivity(), "Position:" + i + " " + images.get(i),
+                            Toast.LENGTH_SHORT).show();*/
+                    Intent myIntent = new Intent(getActivity(), ContentActivity.class);
+                    Bundle myBundle = new Bundle();
+                    myBundle.putInt("Position", i);
+                    myBundle.putStringArrayList("Images", images);
+                    myIntent.putExtras(myBundle);
+                    startActivity(myIntent);
                 }
             }
         });
