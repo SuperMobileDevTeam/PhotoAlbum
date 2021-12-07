@@ -1,9 +1,12 @@
 package com.example.photoalbum;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
@@ -12,10 +15,15 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 
 public class ContentActivity extends Activity {
     // Button
@@ -28,7 +36,7 @@ public class ContentActivity extends Activity {
 
     // Image uri content
     ArrayList<String> images;
-    int Pre_position = 1;
+    int pos = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,11 +61,11 @@ public class ContentActivity extends Activity {
         Bundle bundle = intent.getExtras();
 
         images = bundle.getStringArrayList("Images");
-        Pre_position = bundle.getInt("Position");
+        pos = bundle.getInt("Position");
 
         ImageView pictureView;
 
-        showLargeImage(Pre_position);
+        showLargeImage(pos);
 
         for (int i = 0; i < images.size(); i++) {
             // Infate
@@ -75,6 +83,7 @@ public class ContentActivity extends Activity {
                 @Override
                 public void onClick(View v) {
                     showLargeImage(singleFrame.getId());
+                    pos = singleFrame.getId();
                 }
             });// listener
         }// for binding ScrollView
@@ -93,7 +102,10 @@ public class ContentActivity extends Activity {
         {
             public void onClick(View v)
             {
-                finish();
+                ContentResolver resolver = getContentResolver();
+                Collection<Uri> uri = new ArrayList<Uri>();
+                uri.add(Uri.parse(images.get(pos)));
+                MediaStore.createFavoriteRequest(resolver, uri, true);
             }
         });
 
