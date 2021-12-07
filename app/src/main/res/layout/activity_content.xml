@@ -81,6 +81,7 @@
         android:layout_weight="1.5">
 
         <HorizontalScrollView
+            android:id="@+id/horizontalScroll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#44aaaaaa"
