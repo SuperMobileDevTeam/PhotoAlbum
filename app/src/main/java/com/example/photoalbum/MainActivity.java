@@ -48,6 +48,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private final int CAMERA_ACCESS_PERMISSION = 1;
     String currentPhotoPath;
     private DrawerLayout drawerLayout;
+
+    int id = R.id.nav_gallery;
+
     ActivityResultLauncher<Intent> cameraActivityLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -113,9 +116,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
-        Fragment galleryFragment = new GalleryFragment();
+        Fragment fragment = new GalleryFragment();
+
+        // Previous fragment
+        switch (id){
+            case R.id.nav_album:
+                fragment = new AlbumFragment();
+                break;
+            case R.id.nav_recent:
+                fragment = new RecentFragment();
+                break;
+            case R.id.nav_favorite:
+                fragment = new FavoriteFragment();
+                break;
+            case R.id.nav_recycle_bin:
+                fragment = new RecycleBinFragment();
+                break;
+            case R.id.nav_settings:
+                fragment = new SettingsFragment();
+                break;
+            case R.id.nav_gallery:
+                fragment = new GalleryFragment();
+                break;
+            default:
+                fragment = new GalleryFragment();
+        }
+
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.add(R.id.content_frame, galleryFragment);
+        ft.add(R.id.content_frame, fragment);
         ft.commit();
     }
 
@@ -132,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
+        id = item.getItemId();
         Fragment fragment = null;
 
         switch (id){
@@ -150,6 +178,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_settings:
                 fragment = new SettingsFragment();
+                break;
+            case R.id.nav_gallery:
+                fragment = new GalleryFragment();
                 break;
             default:
                 fragment = new GalleryFragment();
