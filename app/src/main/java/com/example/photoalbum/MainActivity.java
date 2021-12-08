@@ -2,7 +2,6 @@ package com.example.photoalbum;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -12,10 +11,10 @@ import android.provider.MediaStore;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.photoalbum.db.PhotoAlbumService;
 import com.example.photoalbum.ui.AlbumFragment;
 import com.example.photoalbum.ui.FavoriteFragment;
 import com.example.photoalbum.ui.GalleryFragment;
-import com.example.photoalbum.ui.RecentFragment;
 import com.example.photoalbum.ui.RecycleBinFragment;
 import com.example.photoalbum.ui.SettingsFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -27,7 +26,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
@@ -68,6 +66,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
 
         checkForPermissions();
+
+        PhotoAlbumService.createInstance(getContentResolver());
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -135,9 +135,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (id){
             case R.id.nav_album:
                 fragment = new AlbumFragment();
-                break;
-            case R.id.nav_recent:
-                fragment = new RecentFragment();
                 break;
             case R.id.nav_favorite:
                 fragment = new FavoriteFragment();
