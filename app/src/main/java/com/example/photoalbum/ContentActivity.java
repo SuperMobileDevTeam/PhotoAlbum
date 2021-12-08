@@ -1,7 +1,9 @@
 package com.example.photoalbum;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -14,6 +16,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -103,9 +106,18 @@ public class ContentActivity extends Activity {
             public void onClick(View v)
             {
                 ContentResolver resolver = getContentResolver();
-                Collection<Uri> uri = new ArrayList<Uri>();
-                uri.add(Uri.parse(images.get(pos)));
-                MediaStore.createFavoriteRequest(resolver, uri, true);
+
+                Collection<Uri> collect = new ArrayList<Uri>();
+                Uri uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, pos);
+                collect.add(uri);
+                PendingIntent editPendingIntent = MediaStore.createFavoriteRequest(resolver, collect, true);
+
+                try {
+                    startIntentSenderForResult(editPendingIntent.getIntentSender(), 101, null, 0, 0, 0);
+                } catch (Exception e) {
+                    Toast.makeText(ContentActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
             }
         });
 

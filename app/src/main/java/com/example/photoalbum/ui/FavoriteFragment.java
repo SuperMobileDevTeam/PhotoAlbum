@@ -27,16 +27,14 @@ import java.util.ArrayList;
 
 public class FavoriteFragment extends Fragment {
     ArrayList<String> images;
-    ArrayList<String> nameAlbums = new ArrayList<>();
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         requireActivity().setTitle(R.string.nav_favorite);
-        View layout =  inflater.inflate(R.layout.fragment_favorite, container, false);
+        View layout = inflater.inflate(R.layout.fragment_favorite, container, false);
 
         GridView gridView = (GridView) layout.findViewById(R.id.gridviewGallery);
-        gridView.setAdapter(new FavoriteFragment.FavoriteImageAdapter(getActivity()));
+        gridView.setAdapter(new FavoriteFragment.ImageAdapter(getActivity()));
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -56,10 +54,10 @@ public class FavoriteFragment extends Fragment {
         return layout;
     }
 
-    private class FavoriteImageAdapter extends BaseAdapter {
+    private class ImageAdapter extends BaseAdapter {
         private Activity context;
 
-        public FavoriteImageAdapter(Activity context){
+        public ImageAdapter(Activity context){
             this.context = context;
             images = getAllShownImagePath(context);
         }
@@ -74,7 +72,9 @@ public class FavoriteFragment extends Fragment {
                     MediaStore.Images.Media.DATA,
                     MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
             };
-            cursor = activity.getContentResolver().query(uri, projection, null, null, MediaStore.QUERY_ARG_MATCH_FAVORITE);
+            Bundle selection = new Bundle();
+            selection.putInt(MediaStore.QUERY_ARG_MATCH_FAVORITE, MediaStore.MATCH_DEFAULT);
+            cursor = activity.getContentResolver().query(uri, projection, selection, null);
 
             int count = cursor.getCount();
             ArrayList<String> listOfAllImages = new ArrayList<>(count);
