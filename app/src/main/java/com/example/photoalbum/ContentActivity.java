@@ -21,7 +21,7 @@ import java.util.Collection;
 
 public class ContentActivity extends Activity {
     // Button
-    ImageButton btnBack, btnLike, btnEdit, btnShare, btnMore;
+    ImageButton btnBack, btnLike, btnEdit, btnShare, btnTrash;
 
     // Grouping - Small icon
     ViewGroup scrollViewgroup;
@@ -45,7 +45,7 @@ public class ContentActivity extends Activity {
         btnLike = (ImageButton) findViewById(R.id.btnLike);
         btnEdit = (ImageButton) findViewById(R.id.btnEdit);
         btnShare = (ImageButton) findViewById(R.id.btnShare);
-        btnMore = (ImageButton) findViewById(R.id.btnMore);
+        btnTrash = (ImageButton) findViewById(R.id.btnTrash);
 
         // Binding the ScrollView
         imageSelected = (ImageView) findViewById(R.id.imageSelected);
@@ -148,7 +148,7 @@ public class ContentActivity extends Activity {
         });
 
         // More Button
-        btnMore.setOnClickListener(new View.OnClickListener()
+        btnTrash.setOnClickListener(new View.OnClickListener()
         {
             public void onClick(View v)
             {

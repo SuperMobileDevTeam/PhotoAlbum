@@ -71,39 +71,6 @@ public class GalleryFragment extends Fragment {
         }
 
         private void getAllShownImagePath(Activity activity) {
-            // Uri uri;
-            // Cursor cursor;
-            // int column_index_data;
-            // int column_index_id;
-            // int column_index_fav;
-
-
-            // uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-            // String[] projection = {
-            //         MediaStore.Images.Media.DATA,
-            //         MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
-            //         MediaStore.Images.Media._ID,
-            //         MediaStore.Images.Media.IS_FAVORITE
-            // };
-            // cursor = activity.getContentResolver().query(uri, projection, null, null, null);
-
-
-            // int count = cursor.getCount();
-            // ArrayList<String> listOfAllImages = new ArrayList<>(count);
-            // ArrayList<String> listIds = new ArrayList<>(count);
-            // ArrayList<String> listOfFavorites = new ArrayList<>(count);
-
-            // column_index_data = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            // column_index_id = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID);
-            // column_index_fav = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.IS_FAVORITE);
-
-            // cursor.moveToPosition(-1);
-            // while(cursor.moveToNext()){
-
-            //    listOfAllImages.add(cursor.getString(column_index_data));
-            //     listIds.add(cursor.getString(column_index_id));
-            //     listOfFavorites.add(cursor.getString(column_index_fav));
-            // }
 
             List<Photo> photos = null;
 
@@ -163,5 +130,5 @@ public class GalleryFragment extends Fragment {
 
             return pictureView;
         }
-    }
+    } // End ImageAdapter
 }
