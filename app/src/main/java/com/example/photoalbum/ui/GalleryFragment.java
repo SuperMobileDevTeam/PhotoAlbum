@@ -2,7 +2,9 @@ package com.example.photoalbum.ui;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -20,10 +22,15 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.photoalbum.ContentActivity;
+import com.example.photoalbum.MyUtil;
 import com.example.photoalbum.R;
+import com.example.photoalbum.db.Photo;
+import com.example.photoalbum.db.PhotoAlbumService;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class GalleryFragment extends Fragment {
     ArrayList<String> images;
@@ -35,20 +42,18 @@ public class GalleryFragment extends Fragment {
         View layout = inflater.inflate(R.layout.fragment_gallery, container, false);
 
         GridView gridView = (GridView) layout.findViewById(R.id.gridviewGallery);
+        if(MyUtil.isInNightMode(requireActivity())) gridView.setBackgroundColor(Color.BLACK);
+        else gridView.setBackgroundColor(Color.WHITE);
+
         gridView.setAdapter(new GalleryFragment.ImageAdapter(getActivity()));
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if(null != images && !images.isEmpty()) {
-                    /*Toast.makeText(getActivity(), "Position:" + i + " " + images.get(i),
-                            Toast.LENGTH_SHORT).show();*/
-                    Intent myIntent = new Intent(getActivity(), ContentActivity.class);
-                    Bundle myBundle = new Bundle();
-                    myBundle.putInt("Position", i);
-                    myBundle.putStringArrayList("Images", images);
-                    myIntent.putExtras(myBundle);
-                    startActivity(myIntent);
-                }
+        gridView.setOnItemClickListener((adapterView, view, i, l) -> {
+            if(null != images && !images.isEmpty()) {
+                Intent myIntent = new Intent(getActivity(), ContentActivity.class);
+                Bundle myBundle = new Bundle();
+                myBundle.putInt("Position", i);
+                myBundle.putStringArrayList("Images", images);
+                myIntent.putExtras(myBundle);
+                startActivity(myIntent);
             }
         });
 
@@ -64,27 +69,20 @@ public class GalleryFragment extends Fragment {
         }
 
         private ArrayList<String> getAllShownImagePath(Activity activity) {
-            Uri uri;
-            Cursor cursor;
-            int column_index_data;
-
-            uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-            String[] projection = {
-                    MediaStore.Images.Media.DATA,
-                    MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
-            };
-            cursor = activity.getContentResolver().query(uri, projection, null, null, null);
-
-            int count = cursor.getCount();
-            ArrayList<String> listOfAllImages = new ArrayList<>(count);
-            column_index_data = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToPosition(-1);
-            while(cursor.moveToNext()){
-                listOfAllImages.add(cursor.getString(column_index_data));
+            List<Photo> photos = null;
+            try {
+                photos = PhotoAlbumService.getInstance().getPhotos("DATE_ADDED DESC", null, null);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
-            cursor.close();
-            return listOfAllImages;
+            ArrayList<String> result = new ArrayList<>();
+            assert photos != null;
+            for (Photo p: photos) {
+                result.add(p.getAbsolutePath());
+            }
+
+            return result;
         }
 
         @Override
@@ -108,7 +106,6 @@ public class GalleryFragment extends Fragment {
             if(view == null){
                 pictureView = new ImageView(context);
                 pictureView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                pictureView.setLayoutParams(new GridView.LayoutParams(270, 270));
             }
             else{
                 pictureView = (ImageView) view;
