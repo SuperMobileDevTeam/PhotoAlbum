@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Alice/Studying/Mobile/.Project/PhotoAlbum/app/src/main/res/drawable/ic_baseline_favorite_border_24.xml" value="0.2641025641025641" />
         <entry key="..\:/Alice/Studying/Mobile/.Project/PhotoAlbum/app/src/main/res/layout/activity_content.xml" value="0.25416666666666665" />
         <entry key="..\:/Alice/Studying/Mobile/.Project/PhotoAlbum/app/src/main/res/layout/fragment_favorite.xml" value="0.20052083333333334" />
         <entry key="..\:/Alice/Studying/Mobile/.Project/PhotoAlbum/app/src/main/res/layout/fragment_gallery.xml" value="0.25416666666666665" />

@@ -12,6 +12,7 @@ import android.provider.MediaStore;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.photoalbum.db.PhotoAlbumService;
 import com.example.photoalbum.ui.AlbumFragment;
 import com.example.photoalbum.ui.FavoriteFragment;
 import com.example.photoalbum.ui.GalleryFragment;
@@ -68,6 +69,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
 
         checkForPermissions();
+
+        PhotoAlbumService.createInstance(getContentResolver());
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

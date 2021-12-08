@@ -2,31 +2,22 @@ package com.example.photoalbum;
 
 import android.app.Activity;
 import android.app.PendingIntent;
-import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 
 public class ContentActivity extends Activity {
     // Button
@@ -39,6 +30,8 @@ public class ContentActivity extends Activity {
 
     // Image uri content
     ArrayList<String> images;
+    ArrayList<String> ids;
+    ArrayList<String> isFavorites;
     int pos = 1;
 
     @Override
@@ -64,11 +57,14 @@ public class ContentActivity extends Activity {
         Bundle bundle = intent.getExtras();
 
         images = bundle.getStringArrayList("Images");
+        ids = bundle.getStringArrayList("IDs");
+        isFavorites = bundle.getStringArrayList("Favorites");
         pos = bundle.getInt("Position");
 
         ImageView pictureView;
 
         showLargeImage(pos);
+        changeFavoriteButton(pos);
 
         for (int i = 0; i < images.size(); i++) {
             // Infate
@@ -86,6 +82,7 @@ public class ContentActivity extends Activity {
                 @Override
                 public void onClick(View v) {
                     showLargeImage(singleFrame.getId());
+                    changeFavoriteButton(pos);
                     pos = singleFrame.getId();
                 }
             });// listener
@@ -105,17 +102,28 @@ public class ContentActivity extends Activity {
         {
             public void onClick(View v)
             {
-                ContentResolver resolver = getContentResolver();
+                final String[] columns = {MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID, MediaStore.Images.ImageColumns.ORIENTATION};
+                final String orderBy = MediaStore.Images.Media.DATE_TAKEN;
+                Cursor imageCursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, null, null, orderBy + " DESC" );
 
                 Collection<Uri> collect = new ArrayList<Uri>();
-                Uri uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, pos);
+                Uri uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, Long.parseLong(ids.get(pos)));
+
                 collect.add(uri);
-                PendingIntent editPendingIntent = MediaStore.createFavoriteRequest(resolver, collect, true);
+                PendingIntent editPendingIntent;
+                if (isFavorites.get(pos).equals("1")) {
+                    editPendingIntent = MediaStore.createFavoriteRequest(getContentResolver(), collect, false);
+                    isFavorites.set(pos, "0");
+                }
+                else  {
+                    editPendingIntent = MediaStore.createFavoriteRequest(getContentResolver(), collect, true);
+                    isFavorites.set(pos, "1");
+                }
 
                 try {
                     startIntentSenderForResult(editPendingIntent.getIntentSender(), 101, null, 0, 0, 0);
+                    changeFavoriteButton(pos);
                 } catch (Exception e) {
-                    Toast.makeText(ContentActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
             }
@@ -157,5 +165,8 @@ public class ContentActivity extends Activity {
                 .into(imageSelected);
     }
 
-
+    protected void changeFavoriteButton(int frameId) {
+        if (isFavorites.get(frameId).equals("1")) btnLike.setImageResource(R.drawable.icon_heart_red);
+        else btnLike.setImageResource(R.drawable.icon_heart);
+    }
 } // main

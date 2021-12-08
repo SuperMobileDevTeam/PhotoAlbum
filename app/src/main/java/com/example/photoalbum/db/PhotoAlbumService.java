@@ -31,7 +31,9 @@ public class PhotoAlbumService {
                 MediaStore.Images.Media.DATE_ADDED,
                 MediaStore.Images.Media.DATE_MODIFIED,
                 MediaStore.Images.Media.HEIGHT,
-                MediaStore.Images.Media.WIDTH
+                MediaStore.Images.Media.WIDTH,
+                MediaStore.Images.Media._ID,
+                MediaStore.Images.Media.IS_FAVORITE
         ));
     }
 
@@ -56,7 +58,9 @@ public class PhotoAlbumService {
                     cursor.getString(3),
                     cursor.getString(4),
                     cursor.getString(5),
-                    cursor.getString(6)
+                    cursor.getString(6),
+                    cursor.getString(7),
+                    cursor.getString(8)
             );
             result.add(photo);
         }

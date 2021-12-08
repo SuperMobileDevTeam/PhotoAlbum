@@ -72,9 +72,11 @@ public class FavoriteFragment extends Fragment {
                     MediaStore.Images.Media.DATA,
                     MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
             };
-            Bundle selection = new Bundle();
-            selection.putInt(MediaStore.QUERY_ARG_MATCH_FAVORITE, MediaStore.MATCH_DEFAULT);
-            cursor = activity.getContentResolver().query(uri, projection, selection, null);
+
+            String selection = MediaStore.Images.Media.IS_FAVORITE + " = 1";
+            String sortOder = MediaStore.Images.Media.DATE_ADDED;
+
+            cursor = activity.getContentResolver().query(uri, projection, selection, null, sortOder);
 
             int count = cursor.getCount();
             ArrayList<String> listOfAllImages = new ArrayList<>(count);

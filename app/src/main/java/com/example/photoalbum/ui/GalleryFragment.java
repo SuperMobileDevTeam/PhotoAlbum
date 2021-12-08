@@ -21,12 +21,17 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.photoalbum.ContentActivity;
 import com.example.photoalbum.R;
+import com.example.photoalbum.db.Photo;
+import com.example.photoalbum.db.PhotoAlbumService;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 public class GalleryFragment extends Fragment {
     ArrayList<String> images;
+    ArrayList<String> ids;
+    ArrayList<String> isFavorites;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,6 +51,8 @@ public class GalleryFragment extends Fragment {
                     Bundle myBundle = new Bundle();
                     myBundle.putInt("Position", i);
                     myBundle.putStringArrayList("Images", images);
+                    myBundle.putStringArrayList("IDs", ids);
+                    myBundle.putStringArrayList("Favorites", isFavorites);
                     myIntent.putExtras(myBundle);
                     startActivity(myIntent);
                 }
@@ -60,31 +67,67 @@ public class GalleryFragment extends Fragment {
 
         public ImageAdapter(Activity context){
             this.context = context;
-            images = getAllShownImagePath(context);
+            getAllShownImagePath(context);
         }
 
-        private ArrayList<String> getAllShownImagePath(Activity activity) {
-            Uri uri;
-            Cursor cursor;
-            int column_index_data;
+        private void getAllShownImagePath(Activity activity) {
+            // Uri uri;
+            // Cursor cursor;
+            // int column_index_data;
+            // int column_index_id;
+            // int column_index_fav;
 
-            uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-            String[] projection = {
-                    MediaStore.Images.Media.DATA,
-                    MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
-            };
-            cursor = activity.getContentResolver().query(uri, projection, null, null, null);
 
-            int count = cursor.getCount();
-            ArrayList<String> listOfAllImages = new ArrayList<>(count);
-            column_index_data = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToPosition(-1);
-            while(cursor.moveToNext()){
-                listOfAllImages.add(cursor.getString(column_index_data));
+            // uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+            // String[] projection = {
+            //         MediaStore.Images.Media.DATA,
+            //         MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
+            //         MediaStore.Images.Media._ID,
+            //         MediaStore.Images.Media.IS_FAVORITE
+            // };
+            // cursor = activity.getContentResolver().query(uri, projection, null, null, null);
+
+
+            // int count = cursor.getCount();
+            // ArrayList<String> listOfAllImages = new ArrayList<>(count);
+            // ArrayList<String> listIds = new ArrayList<>(count);
+            // ArrayList<String> listOfFavorites = new ArrayList<>(count);
+
+            // column_index_data = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            // column_index_id = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID);
+            // column_index_fav = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.IS_FAVORITE);
+
+            // cursor.moveToPosition(-1);
+            // while(cursor.moveToNext()){
+
+            //    listOfAllImages.add(cursor.getString(column_index_data));
+            //     listIds.add(cursor.getString(column_index_id));
+            //     listOfFavorites.add(cursor.getString(column_index_fav));
+            // }
+
+            List<Photo> photos = null;
+
+            try{
+                photos = PhotoAlbumService.getInstance().getPhotos(null, null, null);
+            }
+            catch(Exception err){
+                err.printStackTrace();
             }
 
-            cursor.close();
-            return listOfAllImages;
+            int count = photos.size();
+            ArrayList<String> listOfAllImages = new ArrayList<>(count);
+            ArrayList<String> listIds = new ArrayList<>(count);
+            ArrayList<String> listOfFavorites = new ArrayList<>(count);
+
+            for(Photo p : photos){
+                listOfAllImages.add(p.getAbsolutePath());
+                listIds.add(p.getId());
+                listOfFavorites.add(p.getIsFavorite());
+            }
+
+            images = listOfAllImages;
+            ids = listIds;
+            isFavorites = listOfFavorites;
         }
 
         @Override
