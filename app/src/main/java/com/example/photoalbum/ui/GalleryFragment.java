@@ -36,6 +36,7 @@ public class GalleryFragment extends Fragment {
     ArrayList<String> images;
     ArrayList<String> ids;
     ArrayList<String> isFavorites;
+    String isTrash;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,6 +59,7 @@ public class GalleryFragment extends Fragment {
                     myBundle.putStringArrayList("Images", images);
                     myBundle.putStringArrayList("IDs", ids);
                     myBundle.putStringArrayList("Favorites", isFavorites);
+                    myBundle.putString("Trash", isTrash);
                     myIntent.putExtras(myBundle);
                     startActivity(myIntent);
                 }
@@ -85,7 +87,8 @@ public class GalleryFragment extends Fragment {
                 err.printStackTrace();
             }
 
-            int count = photos.size();
+            int count = 0;
+            if (photos != null) count = photos.size();
             ArrayList<String> listOfAllImages = new ArrayList<>(count);
             ArrayList<String> listIds = new ArrayList<>(count);
             ArrayList<String> listOfFavorites = new ArrayList<>(count);
@@ -94,6 +97,7 @@ public class GalleryFragment extends Fragment {
                 listOfAllImages.add(p.getAbsolutePath());
                 listIds.add(p.getId());
                 listOfFavorites.add(p.getIsFavorite());
+                isTrash = p.getIsTrash();
             }
 
             images = listOfAllImages;
