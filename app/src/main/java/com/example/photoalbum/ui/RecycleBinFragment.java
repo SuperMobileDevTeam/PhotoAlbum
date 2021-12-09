@@ -4,9 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +12,8 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+
+import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.example.photoalbum.ContentActivity;
@@ -73,7 +72,9 @@ public class RecycleBinFragment extends Fragment {
             List<Photo> photos = null;
 
             try{
-                photos = PhotoAlbumService.getInstance().getPhotos(null, MediaStore.Images.Media.IS_TRASHED + " = 1", null);
+                Bundle bundle = new Bundle();
+                bundle.putInt(MediaStore.QUERY_ARG_MATCH_TRASHED, MediaStore.MATCH_ONLY);
+                photos = PhotoAlbumService.getInstance().getPhotosWithBundle(bundle, null);
             }
             catch(Exception err){
                 err.printStackTrace();
