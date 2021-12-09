@@ -34,8 +34,8 @@ public class RecycleBinFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        requireActivity().setTitle(R.string.nav_gallery);
-        View layout = inflater.inflate(R.layout.fragment_gallery, container, false);
+        requireActivity().setTitle(R.string.nav_recycle_bin);
+        View layout = inflater.inflate(R.layout.fragment_recycle_bin, container, false);
 
         GridView gridView = (GridView) layout.findViewById(R.id.gridviewGallery);
         if(MyUtil.isInNightMode(requireActivity())) gridView.setBackgroundColor(Color.BLACK);
@@ -79,7 +79,9 @@ public class RecycleBinFragment extends Fragment {
                 err.printStackTrace();
             }
 
-            int count = photos.size();
+            int count = 0;
+            if (photos != null) count = photos.size();
+
             ArrayList<String> listOfAllImages = new ArrayList<>(count);
             ArrayList<String> listIds = new ArrayList<>(count);
             ArrayList<String> listOfFavorites = new ArrayList<>(count);

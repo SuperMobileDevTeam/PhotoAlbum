@@ -47,7 +47,8 @@ public class PhotoAlbumService {
         Cursor cursor = contentResolver.query(uri, getColumns(), selection, selectionArgs, order);
         int count = cursor.getCount();
         if (count == 0) {
-            throw new Exception("No image found");
+            return result;
+            //throw new Exception("No image found");
         }
         cursor.moveToPosition(-1);
         while (cursor.moveToNext()){

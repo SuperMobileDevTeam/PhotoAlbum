@@ -85,7 +85,8 @@ public class GalleryFragment extends Fragment {
                 err.printStackTrace();
             }
 
-            int count = photos.size();
+            int count = 0;
+            if (photos != null) count = photos.size();
             ArrayList<String> listOfAllImages = new ArrayList<>(count);
             ArrayList<String> listIds = new ArrayList<>(count);
             ArrayList<String> listOfFavorites = new ArrayList<>(count);
