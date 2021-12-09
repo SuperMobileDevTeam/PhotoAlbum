@@ -1,25 +1,27 @@
 package com.example.photoalbum;
 
 import android.app.Activity;
+import android.app.PendingIntent;
+import android.content.ContentUris;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class ContentActivity extends Activity {
     // Button
-    ImageButton btnBack, btnLike, btnEdit, btnShare, btnMore;
+    ImageButton btnBack, btnLike, btnEdit, btnShare, btnTrash;
 
     // Grouping - Small icon
     ViewGroup scrollViewgroup;
@@ -28,7 +30,9 @@ public class ContentActivity extends Activity {
 
     // Image uri content
     ArrayList<String> images;
-    int Pre_position = 1;
+    ArrayList<String> ids;
+    ArrayList<String> isFavorites;
+    int pos = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +45,7 @@ public class ContentActivity extends Activity {
         btnLike = (ImageButton) findViewById(R.id.btnLike);
         btnEdit = (ImageButton) findViewById(R.id.btnEdit);
         btnShare = (ImageButton) findViewById(R.id.btnShare);
-        btnMore = (ImageButton) findViewById(R.id.btnMore);
+        btnTrash = (ImageButton) findViewById(R.id.btnTrash);
 
         // Binding the ScrollView
         imageSelected = (ImageView) findViewById(R.id.imageSelected);
@@ -53,11 +57,14 @@ public class ContentActivity extends Activity {
         Bundle bundle = intent.getExtras();
 
         images = bundle.getStringArrayList("Images");
-        Pre_position = bundle.getInt("Position");
+        ids = bundle.getStringArrayList("IDs");
+        isFavorites = bundle.getStringArrayList("Favorites");
+        pos = bundle.getInt("Position");
 
         ImageView pictureView;
 
-        showLargeImage(Pre_position);
+        showLargeImage(pos);
+        changeFavoriteButton(pos);
 
         for (int i = 0; i < images.size(); i++) {
             // Infate
@@ -75,6 +82,8 @@ public class ContentActivity extends Activity {
                 @Override
                 public void onClick(View v) {
                     showLargeImage(singleFrame.getId());
+                    changeFavoriteButton(pos);
+                    pos = singleFrame.getId();
                 }
             });// listener
         }// for binding ScrollView
@@ -93,7 +102,26 @@ public class ContentActivity extends Activity {
         {
             public void onClick(View v)
             {
-                finish();
+                Collection<Uri> collect = new ArrayList<Uri>();
+                Uri uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, Long.parseLong(ids.get(pos)));
+
+                collect.add(uri);
+                PendingIntent editPendingIntent;
+                if (isFavorites.get(pos).equals("1")) {
+                    editPendingIntent = MediaStore.createFavoriteRequest(getContentResolver(), collect, false);
+                    isFavorites.set(pos, "0");
+                }
+                else  {
+                    editPendingIntent = MediaStore.createFavoriteRequest(getContentResolver(), collect, true);
+                    isFavorites.set(pos, "1");
+                }
+
+                try {
+                    startIntentSenderForResult(editPendingIntent.getIntentSender(), 101, null, 0, 0, 0);
+                    changeFavoriteButton(pos);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -116,7 +144,7 @@ public class ContentActivity extends Activity {
         });
 
         // More Button
-        btnMore.setOnClickListener(new View.OnClickListener()
+        btnTrash.setOnClickListener(new View.OnClickListener()
         {
             public void onClick(View v)
             {
@@ -133,5 +161,8 @@ public class ContentActivity extends Activity {
                 .into(imageSelected);
     }
 
-
+    protected void changeFavoriteButton(int frameId) {
+        if (isFavorites.get(frameId).equals("1")) btnLike.setImageResource(R.drawable.icon_heart_red);
+        else btnLike.setImageResource(R.drawable.icon_heart);
+    }
 } // main

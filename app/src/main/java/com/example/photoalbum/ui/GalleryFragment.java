@@ -34,6 +34,8 @@ import java.util.Objects;
 
 public class GalleryFragment extends Fragment {
     ArrayList<String> images;
+    ArrayList<String> ids;
+    ArrayList<String> isFavorites;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,14 +48,21 @@ public class GalleryFragment extends Fragment {
         else gridView.setBackgroundColor(Color.WHITE);
 
         gridView.setAdapter(new GalleryFragment.ImageAdapter(getActivity()));
-        gridView.setOnItemClickListener((adapterView, view, i, l) -> {
-            if(null != images && !images.isEmpty()) {
-                Intent myIntent = new Intent(getActivity(), ContentActivity.class);
-                Bundle myBundle = new Bundle();
-                myBundle.putInt("Position", i);
-                myBundle.putStringArrayList("Images", images);
-                myIntent.putExtras(myBundle);
-                startActivity(myIntent);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if(null != images && !images.isEmpty()) {
+                    /*Toast.makeText(getActivity(), "Position:" + i + " " + images.get(i),
+                            Toast.LENGTH_SHORT).show();*/
+                    Intent myIntent = new Intent(getActivity(), ContentActivity.class);
+                    Bundle myBundle = new Bundle();
+                    myBundle.putInt("Position", i);
+                    myBundle.putStringArrayList("Images", images);
+                    myBundle.putStringArrayList("IDs", ids);
+                    myBundle.putStringArrayList("Favorites", isFavorites);
+                    myIntent.putExtras(myBundle);
+                    startActivity(myIntent);
+                }
             }
         });
 
@@ -65,24 +74,33 @@ public class GalleryFragment extends Fragment {
 
         public ImageAdapter(Activity context){
             this.context = context;
-            images = getAllShownImagePath(context);
+            getAllShownImagePath(context);
         }
 
-        private ArrayList<String> getAllShownImagePath(Activity activity) {
+        private void getAllShownImagePath(Activity activity) {
             List<Photo> photos = null;
-            try {
-                photos = PhotoAlbumService.getInstance().getPhotos("DATE_ADDED DESC", null, null);
-            } catch (Exception e) {
-                e.printStackTrace();
+
+            try{
+                photos = PhotoAlbumService.getInstance().getPhotos(null, null, null);
+            }
+            catch(Exception err){
+                err.printStackTrace();
             }
 
-            ArrayList<String> result = new ArrayList<>();
-            assert photos != null;
-            for (Photo p: photos) {
-                result.add(p.getAbsolutePath());
+            int count = photos.size();
+            ArrayList<String> listOfAllImages = new ArrayList<>(count);
+            ArrayList<String> listIds = new ArrayList<>(count);
+            ArrayList<String> listOfFavorites = new ArrayList<>(count);
+
+            for(Photo p : photos){
+                listOfAllImages.add(p.getAbsolutePath());
+                listIds.add(p.getId());
+                listOfFavorites.add(p.getIsFavorite());
             }
 
-            return result;
+            images = listOfAllImages;
+            ids = listIds;
+            isFavorites = listOfFavorites;
         }
 
         @Override
@@ -117,5 +135,5 @@ public class GalleryFragment extends Fragment {
 
             return pictureView;
         }
-    }
+    } // End ImageAdapter
 }
