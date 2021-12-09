@@ -120,9 +120,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_album:
                 fragment = new AlbumFragment();
                 break;
-            case R.id.nav_recent:
-                fragment = new RecentFragment();
-                break;
             case R.id.nav_favorite:
                 fragment = new FavoriteFragment();
                 break;

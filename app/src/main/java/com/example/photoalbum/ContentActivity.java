@@ -148,10 +148,23 @@ public class ContentActivity extends Activity {
         {
             public void onClick(View v)
             {
+                Collection<Uri> collect = new ArrayList<Uri>();
+                Uri uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, Long.parseLong(ids.get(pos)));
+
+                collect.add(uri);
+                PendingIntent editPendingIntent = MediaStore.createTrashRequest(getContentResolver(), collect, true);
+
+                try {
+                    startIntentSenderForResult(editPendingIntent.getIntentSender(), 101, null, 0, 0, 0);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 finish();
             }
         });
     }//onCreate
+
+
 
     //display a high-quality version of the image selected using thumbnails
     protected void showLargeImage(int frameId) {
