@@ -9,6 +9,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -123,7 +124,10 @@ public class FavoriteFragment extends Fragment {
             if(view == null){
                 pictureView = new ImageView(context);
                 pictureView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                pictureView.setLayoutParams(new GridView.LayoutParams(270, 270));
+                DisplayMetrics displaymetrics = new DisplayMetrics();
+                getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+                int width = displaymetrics.widthPixels;
+                pictureView.setLayoutParams(new GridView.LayoutParams(width/3, width/3));
             }
             else{
                 pictureView = (ImageView) view;

@@ -11,6 +11,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +43,7 @@ public class GalleryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         requireActivity().setTitle(R.string.nav_gallery);
-        View layout = inflater.inflate(R.layout.fragment_gallery, container, false);
+        View layout = inflater.inflate(R.layout.fragment_favorite, container, false);
 
         GridView gridView = (GridView) layout.findViewById(R.id.gridviewGallery);
         if(MyUtil.isInNightMode(requireActivity())) gridView.setBackgroundColor(Color.BLACK);
@@ -93,12 +94,15 @@ public class GalleryFragment extends Fragment {
             ArrayList<String> listIds = new ArrayList<>(count);
             ArrayList<String> listOfFavorites = new ArrayList<>(count);
 
-            for(Photo p : photos){
-                listOfAllImages.add(p.getAbsolutePath());
-                listIds.add(p.getId());
-                listOfFavorites.add(p.getIsFavorite());
-                isTrash = p.getIsTrash();
-            }
+            if (photos != null) {
+                for(Photo p : photos){
+                    listOfAllImages.add(p.getAbsolutePath());
+                    listIds.add(p.getId());
+                    listOfFavorites.add(p.getIsFavorite());
+                    isTrash = p.getIsTrash();
+                }
+            } else isTrash = "0";
+
 
             images = listOfAllImages;
             ids = listIds;
@@ -126,6 +130,10 @@ public class GalleryFragment extends Fragment {
             if(view == null){
                 pictureView = new ImageView(context);
                 pictureView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                DisplayMetrics displaymetrics = new DisplayMetrics();
+                getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+                int width = displaymetrics.widthPixels;
+                pictureView.setLayoutParams(new GridView.LayoutParams(width/3, width/3));
             }
             else{
                 pictureView = (ImageView) view;

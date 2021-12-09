@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,7 +51,7 @@ public class RecycleBinFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         requireActivity().setTitle(R.string.nav_recycle_bin);
-        View layout = inflater.inflate(R.layout.fragment_recycle_bin, container, false);
+        View layout = inflater.inflate(R.layout.fragment_favorite, container, false);
 
         //verifyStoragePermissions(getActivity());
 
@@ -141,6 +142,10 @@ public class RecycleBinFragment extends Fragment {
             if(view == null){
                 pictureView = new ImageView(context);
                 pictureView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                DisplayMetrics displaymetrics = new DisplayMetrics();
+                getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+                int width = displaymetrics.widthPixels;
+                pictureView.setLayoutParams(new GridView.LayoutParams(width/3, width/3));
             }
             else{
                 pictureView = (ImageView) view;
