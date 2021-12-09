@@ -10,9 +10,10 @@ public class Photo {
     private double width;
     private String id;
     private String isFavorite;
+    private String isTrash;
 
     public Photo(String absolutePath, String folder, String displayName,
-     String dateAdded, String dateModified, String height, String width, String id, String isFavorite) {
+     String dateAdded, String dateModified, String height, String width, String id, String isFavorite, String isTrash) {
         this.absolutePath = absolutePath;
         this.folder = folder;
         this.displayName = displayName;
@@ -22,6 +23,7 @@ public class Photo {
         this.width = Double.parseDouble(width);
         this.id = id;
         this.isFavorite = isFavorite;
+        this.isTrash = isTrash;
     }
 
     public String getAbsolutePath() {
@@ -55,4 +57,6 @@ public class Photo {
     public String getId() { return id; }
 
     public String getIsFavorite() { return isFavorite; }
+
+    public String getIsTrash() { return isTrash; }
 }

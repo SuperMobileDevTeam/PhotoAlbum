@@ -1,8 +1,11 @@
 package com.example.photoalbum.ui;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
@@ -13,9 +16,15 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.example.photoalbum.ContentActivity;
 import com.example.photoalbum.MyUtil;
 import com.example.photoalbum.R;
@@ -29,12 +38,21 @@ public class RecycleBinFragment extends Fragment {
     ArrayList<String> images;
     ArrayList<String> ids;
     ArrayList<String> isFavorites;
+    String isTrash;
+
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         requireActivity().setTitle(R.string.nav_recycle_bin);
         View layout = inflater.inflate(R.layout.fragment_recycle_bin, container, false);
+
+        //verifyStoragePermissions(getActivity());
 
         GridView gridView = (GridView) layout.findViewById(R.id.gridviewGallery);
         if(MyUtil.isInNightMode(requireActivity())) gridView.setBackgroundColor(Color.BLACK);
@@ -51,6 +69,7 @@ public class RecycleBinFragment extends Fragment {
                     myBundle.putStringArrayList("Images", images);
                     myBundle.putStringArrayList("IDs", ids);
                     myBundle.putStringArrayList("Favorites", isFavorites);
+                    myBundle.putString("Trash", isTrash);
                     myIntent.putExtras(myBundle);
                     startActivity(myIntent);
                 }
@@ -87,11 +106,14 @@ public class RecycleBinFragment extends Fragment {
             ArrayList<String> listIds = new ArrayList<>(count);
             ArrayList<String> listOfFavorites = new ArrayList<>(count);
 
-            for(Photo p : photos){
-                listOfAllImages.add(p.getAbsolutePath());
-                listIds.add(p.getId());
-                listOfFavorites.add(p.getIsFavorite());
-            }
+            if (photos != null) {
+                for(Photo p : photos){
+                    listOfAllImages.add(p.getAbsolutePath());
+                    listIds.add(p.getId());
+                    listOfFavorites.add(p.getIsFavorite());
+                    isTrash = p.getIsTrash();
+                }
+            } else isTrash = "1";
 
             images = listOfAllImages;
             ids = listIds;
@@ -125,10 +147,35 @@ public class RecycleBinFragment extends Fragment {
             }
 
             Glide.with(context).load(images.get(i))
+                    .listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                            e.printStackTrace();
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            return false;
+                        }
+                    })
                     .placeholder(R.drawable.ic_launcher_foreground)
                     .centerCrop().into(pictureView);
-
             return pictureView;
         }
     } // End ImageAdapter
+
+    public static void verifyStoragePermissions(Activity activity) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        }
+    }
 }
