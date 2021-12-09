@@ -1,42 +1,4 @@
-package com.example.photoalbum;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import android.Manifest;
-import android.app.Activity;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Typeface;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.view.View;
-import android.webkit.PermissionRequest;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.Toast;
-
-import com.android.volley.Response;
-
-import ja.burhanrashid52.photoeditor.PhotoEditor;
-import ja.burhanrashid52.photoeditor.PhotoEditorView;
-
-/*public class EditorActivity extends AppCompatActivity {
-    // initialize variable
-    PhotoEditorView mPhotoEditorView;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_editor);
-
-        mPhotoEditorView = findViewById(R.id.photoEditorView);
-
-        mPhotoEditorView.getSource().setImageResource(R.drawable.river);
-
-    }
-}*/
+package com.example.photoalbum.editor;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -50,9 +12,11 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AnticipateOvershootInterpolator;
-
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -64,25 +28,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.transition.ChangeBounds;
 import androidx.transition.TransitionManager;
 
-import com.example.photoalbum.editor.BaseActivity;
-import com.example.photoalbum.editor.EditImageActivity;
-import com.example.photoalbum.editor.EditingToolsAdapter;
-import com.example.photoalbum.editor.EmojiBSFragment;
-import com.example.photoalbum.editor.FileSaveHelper;
-import com.example.photoalbum.editor.FilterListener;
-import com.example.photoalbum.editor.FilterViewAdapter;
-import com.example.photoalbum.editor.PropertiesBSFragment;
-import com.example.photoalbum.editor.ShapeBSFragment;
-import com.example.photoalbum.editor.StickerBSFragment;
-import com.example.photoalbum.editor.TextEditorDialogFragment;
-import com.example.photoalbum.editor.ToolType;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.io.File;
 import java.io.IOException;
 
 import ja.burhanrashid52.photoeditor.OnPhotoEditorListener;
-
+import ja.burhanrashid52.photoeditor.PhotoEditor;
+import ja.burhanrashid52.photoeditor.PhotoEditorView;
 import ja.burhanrashid52.photoeditor.PhotoFilter;
 import ja.burhanrashid52.photoeditor.SaveSettings;
 import ja.burhanrashid52.photoeditor.shape.ShapeBuilder;
@@ -90,9 +43,11 @@ import ja.burhanrashid52.photoeditor.shape.ShapeType;
 import ja.burhanrashid52.photoeditor.TextStyleBuilder;
 import ja.burhanrashid52.photoeditor.ViewType;
 
+import com.example.photoalbum.R;
+
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
-public class EditorActivity extends BaseActivity implements OnPhotoEditorListener,
+public class EditImageActivity extends BaseActivity implements OnPhotoEditorListener,
         View.OnClickListener,
         PropertiesBSFragment.Properties,
         ShapeBSFragment.Properties,
@@ -340,7 +295,7 @@ public class EditorActivity extends BaseActivity implements OnPhotoEditorListene
         final String fileName = System.currentTimeMillis() + ".png";
         final boolean hasStoragePermission =
                 ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED;
-        if (hasStoragePermission){//|| isSdkHigherThan28()) {
+        if (hasStoragePermission){ //|| isSdkHigherThan28()) {
             showLoading("Saving...");
             mSaveFileHelper.createFile(fileName, (fileCreated, filePath, error, uri) -> {
                 if (fileCreated) {
@@ -538,5 +493,4 @@ public class EditorActivity extends BaseActivity implements OnPhotoEditorListene
             super.onBackPressed();
         }
     }
-
 }
