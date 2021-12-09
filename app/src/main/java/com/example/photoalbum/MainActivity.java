@@ -120,9 +120,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_album:
                 fragment = new AlbumFragment();
                 break;
-            case R.id.nav_recent:
-                fragment = new RecentFragment();
-                break;
             case R.id.nav_favorite:
                 fragment = new FavoriteFragment();
                 break;
@@ -131,9 +128,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_settings:
                 fragment = new SettingsFragment();
-                break;
-            case R.id.nav_gallery:
-                fragment = new GalleryFragment();
                 break;
             default:
                 fragment = new GalleryFragment();
@@ -152,7 +146,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED){
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, CAMERA_ACCESS_PERMISSION);
         }
-
     }
 
     @Override
@@ -172,9 +165,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_settings:
                 fragment = new SettingsFragment();
-                break;
-            case R.id.nav_gallery:
-                fragment = new GalleryFragment();
                 break;
             default:
                 fragment = new GalleryFragment();
