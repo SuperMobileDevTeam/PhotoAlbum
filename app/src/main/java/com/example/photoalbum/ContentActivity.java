@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.ContentUris;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -135,12 +134,13 @@ public class ContentActivity extends Activity {
         });
 
         // Share Button
-        btnShare.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                finish();
-            }
+        btnShare.setOnClickListener(v -> {
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+            shareIntent.setType("image/*");
+            Uri uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, Long.parseLong(ids.get(pos)));;
+            shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+            startActivity(shareIntent);
         });
 
         // More Button

@@ -52,8 +52,6 @@ public class GalleryFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if(null != images && !images.isEmpty()) {
-                    /*Toast.makeText(getActivity(), "Position:" + i + " " + images.get(i),
-                            Toast.LENGTH_SHORT).show();*/
                     Intent myIntent = new Intent(getActivity(), ContentActivity.class);
                     Bundle myBundle = new Bundle();
                     myBundle.putInt("Position", i);
@@ -81,7 +79,7 @@ public class GalleryFragment extends Fragment {
             List<Photo> photos = null;
 
             try{
-                photos = PhotoAlbumService.getInstance().getPhotos(null, null, null);
+                photos = PhotoAlbumService.getInstance().getPhotos("DATE_ADDED DESC", null, null);
             }
             catch(Exception err){
                 err.printStackTrace();
