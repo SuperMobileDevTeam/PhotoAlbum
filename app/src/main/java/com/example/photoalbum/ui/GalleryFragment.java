@@ -2,7 +2,9 @@ package com.example.photoalbum.ui;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -20,6 +22,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.photoalbum.ContentActivity;
+import com.example.photoalbum.MyUtil;
 import com.example.photoalbum.R;
 import com.example.photoalbum.db.Photo;
 import com.example.photoalbum.db.PhotoAlbumService;
@@ -27,6 +30,7 @@ import com.example.photoalbum.db.PhotoAlbumService;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class GalleryFragment extends Fragment {
     ArrayList<String> images;
@@ -40,6 +44,9 @@ public class GalleryFragment extends Fragment {
         View layout = inflater.inflate(R.layout.fragment_gallery, container, false);
 
         GridView gridView = (GridView) layout.findViewById(R.id.gridviewGallery);
+        if(MyUtil.isInNightMode(requireActivity())) gridView.setBackgroundColor(Color.BLACK);
+        else gridView.setBackgroundColor(Color.WHITE);
+
         gridView.setAdapter(new GalleryFragment.ImageAdapter(getActivity()));
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -71,7 +78,6 @@ public class GalleryFragment extends Fragment {
         }
 
         private void getAllShownImagePath(Activity activity) {
-
             List<Photo> photos = null;
 
             try{
@@ -118,7 +124,6 @@ public class GalleryFragment extends Fragment {
             if(view == null){
                 pictureView = new ImageView(context);
                 pictureView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                pictureView.setLayoutParams(new GridView.LayoutParams(270, 270));
             }
             else{
                 pictureView = (ImageView) view;
