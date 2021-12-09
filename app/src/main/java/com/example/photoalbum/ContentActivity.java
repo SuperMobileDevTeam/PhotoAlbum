@@ -102,10 +102,6 @@ public class ContentActivity extends Activity {
         {
             public void onClick(View v)
             {
-                final String[] columns = {MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID, MediaStore.Images.ImageColumns.ORIENTATION};
-                final String orderBy = MediaStore.Images.Media.DATE_TAKEN;
-                Cursor imageCursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, null, null, orderBy + " DESC" );
-
                 Collection<Uri> collect = new ArrayList<Uri>();
                 Uri uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, Long.parseLong(ids.get(pos)));
 
