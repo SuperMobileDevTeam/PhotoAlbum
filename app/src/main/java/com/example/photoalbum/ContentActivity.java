@@ -102,8 +102,8 @@ public class ContentActivity extends Activity {
         {
             public void onClick(View v)
             {
-                Intent i = new Intent(ContentActivity.this, EditorActivity.class);
-                ContentActivity.this.startActivity(i);
+                Intent myIntent = new Intent(ContentActivity.this, EditorActivity.class);
+                ContentActivity.this.startActivity(myIntent);
             }
         });
 

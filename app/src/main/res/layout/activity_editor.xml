@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ja.burhanrashid52.photoeditor.PhotoEditorView
-        android:id="@+id/photoEditor"
+        android:id="@+id/photoEditorView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:photo_src="@drawable/river"/>
+        app:photo_src="@drawable/river" />
 
 </LinearLayout>
