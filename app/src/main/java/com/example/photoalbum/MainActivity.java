@@ -11,29 +11,28 @@ import android.provider.MediaStore;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.example.photoalbum.db.PhotoAlbumService;
-import com.example.photoalbum.ui.AlbumFragment;
-import com.example.photoalbum.ui.FavoriteFragment;
-import com.example.photoalbum.ui.GalleryFragment;
-import com.example.photoalbum.ui.RecycleBinFragment;
-import com.example.photoalbum.ui.SettingsFragment;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.navigation.NavigationView;
-
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.photoalbum.db.PhotoAlbumService;
+import com.example.photoalbum.ui.AlbumFragment;
+import com.example.photoalbum.ui.FavoriteFragment;
+import com.example.photoalbum.ui.GalleryFragment;
+import com.example.photoalbum.ui.RecycleBinFragment;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 
 import java.io.File;
 import java.io.IOException;
@@ -126,9 +125,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_recycle_bin:
                 fragment = new RecycleBinFragment();
                 break;
-            case R.id.nav_settings:
-                fragment = new SettingsFragment();
-                break;
             default:
                 fragment = new GalleryFragment();
         }
@@ -162,9 +158,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_recycle_bin:
                 fragment = new RecycleBinFragment();
-                break;
-            case R.id.nav_settings:
-                fragment = new SettingsFragment();
                 break;
             default:
                 fragment = new GalleryFragment();

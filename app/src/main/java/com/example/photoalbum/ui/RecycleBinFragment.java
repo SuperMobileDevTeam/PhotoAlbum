@@ -5,10 +5,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,15 +15,11 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
-import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.photoalbum.ContentActivity;
 import com.example.photoalbum.MyUtil;
 import com.example.photoalbum.R;
@@ -141,29 +135,16 @@ public class RecycleBinFragment extends Fragment {
             ImageView pictureView;
             if(view == null){
                 pictureView = new ImageView(context);
-                pictureView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                DisplayMetrics displaymetrics = new DisplayMetrics();
-                getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-                int width = displaymetrics.widthPixels;
-                pictureView.setLayoutParams(new GridView.LayoutParams(width/3, width/3));
+                pictureView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                pictureView.setLayoutParams(new GridView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                pictureView.setAdjustViewBounds(true);
             }
             else{
                 pictureView = (ImageView) view;
             }
 
             Glide.with(context).load(images.get(i))
-                    .listener(new RequestListener<Drawable>() {
-                        @Override
-                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                            e.printStackTrace();
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            return false;
-                        }
-                    })
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .placeholder(R.drawable.ic_launcher_foreground)
                     .centerCrop().into(pictureView);
             return pictureView;

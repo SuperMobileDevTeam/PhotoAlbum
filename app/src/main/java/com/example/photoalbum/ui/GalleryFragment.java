@@ -2,16 +2,8 @@ package com.example.photoalbum.ui;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.database.Cursor;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
-import android.provider.MediaStore;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,19 +11,19 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.photoalbum.ContentActivity;
 import com.example.photoalbum.MyUtil;
 import com.example.photoalbum.R;
 import com.example.photoalbum.db.Photo;
 import com.example.photoalbum.db.PhotoAlbumService;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class GalleryFragment extends Fragment {
     ArrayList<String> images;
@@ -103,7 +95,6 @@ public class GalleryFragment extends Fragment {
                 }
             } else isTrash = "0";
 
-
             images = listOfAllImages;
             ids = listIds;
             isFavorites = listOfFavorites;
@@ -129,17 +120,16 @@ public class GalleryFragment extends Fragment {
             ImageView pictureView;
             if(view == null){
                 pictureView = new ImageView(context);
-                pictureView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                DisplayMetrics displaymetrics = new DisplayMetrics();
-                getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-                int width = displaymetrics.widthPixels;
-                pictureView.setLayoutParams(new GridView.LayoutParams(width/3, width/3));
+                pictureView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                pictureView.setLayoutParams(new GridView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                pictureView.setAdjustViewBounds(true);
             }
             else{
                 pictureView = (ImageView) view;
             }
 
             Glide.with(context).load(images.get(i))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .placeholder(R.drawable.ic_launcher_foreground)
                     .centerCrop().into(pictureView);
 
