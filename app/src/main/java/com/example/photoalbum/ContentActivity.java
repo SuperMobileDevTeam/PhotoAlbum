@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.ContentUris;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -12,13 +13,20 @@ import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.dsphotoeditor.sdk.activity.DsPhotoEditorActivity;
+import com.dsphotoeditor.sdk.utils.DsPhotoEditorConstants;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class ContentActivity extends Activity {
+public class ContentActivity extends AppCompatActivity {
     // Button
     ImageButton btnBack, btnLike, btnEdit, btnShare, btnTrash;
 
@@ -33,6 +41,14 @@ public class ContentActivity extends Activity {
     ArrayList<String> isFavorites;
     String isTrash;
     int pos = 1;
+
+    ActivityResultLauncher<Intent> editPhotoActivityLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Toast.makeText(this, "Edit photo successfully", Toast.LENGTH_SHORT).show();
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,12 +144,17 @@ public class ContentActivity extends Activity {
         });
 
         // Edit Button
-        btnEdit.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                finish();
-            }
+        btnEdit.setOnClickListener(v -> {
+            Uri uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, Long.parseLong(ids.get(pos)));;
+            Intent dsPhotoEditorIntent = new Intent(this, DsPhotoEditorActivity.class);
+            dsPhotoEditorIntent.setData(uri);
+            dsPhotoEditorIntent.putExtra(DsPhotoEditorConstants.DS_PHOTO_EDITOR_OUTPUT_DIRECTORY, "Edited");
+            dsPhotoEditorIntent.putExtra(DsPhotoEditorConstants.DS_TOOL_BAR_BACKGROUND_COLOR, Color.parseColor("#66d1ff"));
+            dsPhotoEditorIntent.putExtra(DsPhotoEditorConstants.DS_MAIN_BACKGROUND_COLOR, Color.parseColor("#FFFFFF"));
+            int[] toolsToHide = {DsPhotoEditorActivity.TOOL_PIXELATE};
+            dsPhotoEditorIntent.putExtra(DsPhotoEditorConstants.DS_PHOTO_EDITOR_TOOLS_TO_HIDE, toolsToHide);
+
+            editPhotoActivityLauncher.launch(dsPhotoEditorIntent);
         });
 
         // Share Button
@@ -162,7 +183,6 @@ public class ContentActivity extends Activity {
                     editPendingIntent = MediaStore.createTrashRequest(getContentResolver(), collect, false);
                 }
 
-
                 try {
                     startIntentSenderForResult(editPendingIntent.getIntentSender(), 101, null, 0, 0, 0);
                 } catch (Exception e) {
@@ -172,8 +192,6 @@ public class ContentActivity extends Activity {
             }
         });
     }//onCreate
-
-
 
     //display a high-quality version of the image selected using thumbnails
     protected void showLargeImage(int frameId) {
