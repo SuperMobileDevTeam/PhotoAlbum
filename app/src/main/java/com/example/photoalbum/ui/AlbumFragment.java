@@ -1,12 +1,10 @@
 package com.example.photoalbum.ui;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,40 +14,22 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.bumptech.glide.Glide;
-import com.example.photoalbum.R;
-
-import java.util.ArrayList;
-
-
-import android.app.Activity;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import android.provider.MediaStore;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.photoalbum.MainActivity;
 import com.example.photoalbum.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AlbumFragment extends Fragment {
+    ArrayList<String> byMonth;
+    ArrayList<Album_Item> Albums = new ArrayList<>();
+
     private class Album_Item {
         private String path;
         private String name;
@@ -75,7 +55,6 @@ public class AlbumFragment extends Fragment {
             this.name = name;
         }
     }
-    ArrayList<Album_Item> Albums = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -84,13 +63,17 @@ public class AlbumFragment extends Fragment {
         View layout = inflater.inflate(R.layout.fragment_album, container, false);
 
         GridView gridView = (GridView) layout.findViewById(R.id.gridviewAlbum);
-        gridView.setAdapter(new AlbumFragment.ImageAdapter(getActivity(), R.layout.album_item, Albums));
+        gridView.setAdapter(new AlbumFragment.ImageAdapter(getActivity(), R.layout.album_item));
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if(null != Albums && !Albums.isEmpty()) {
-                    Toast.makeText(getActivity(), "Position:" + i + " " + Albums.get(i),
-                            Toast.LENGTH_SHORT).show();
+                    Intent myIntent = new Intent(getActivity(), MainActivity.class);
+                    Bundle myBundle = new Bundle();
+                    myBundle.putString("Path", Albums.get(i).getPath());
+                    myBundle.putString("Name", Albums.get(i).getName());
+                    myIntent.putExtras(myBundle);
+                    startActivity(myIntent);
                 }
             }
         });
@@ -101,21 +84,19 @@ public class AlbumFragment extends Fragment {
     private class ImageAdapter extends BaseAdapter {
         private Activity context;
         int idLayout;
-        ArrayList<Album_Item> albums;
 
         private class ViewHolder{
             ImageView imgAlbum;
             TextView nameAlbum;
         }
 
-        public ImageAdapter(Activity context, int idLayout, ArrayList<Album_Item> Albums) {
+        public ImageAdapter(Activity context, int idLayout) {
             this.context = context;
             this.idLayout = idLayout;
-            this.albums = Albums;
-            albums = getAllShownAlbumPath(context);
+            getAllShownAlbumPath(context);
         }
 
-        private ArrayList<Album_Item> getAllShownAlbumPath(Activity activity) {
+        private void getAllShownAlbumPath(Activity activity) {
             Uri uri;
             Cursor cursor;
             int bucketIdIndex, bucketNameIndex, imageUriIndex;
@@ -147,12 +128,12 @@ public class AlbumFragment extends Fragment {
             }
 
             cursor.close();
-            return listOfAllAlbums;
+            Albums = listOfAllAlbums;
         }
 
         @Override
         public int getCount() {
-            return albums.size();
+            return Albums.size();
         }
 
         @Override
@@ -181,11 +162,12 @@ public class AlbumFragment extends Fragment {
                 holder = (ViewHolder) convertView.getTag();
             }
 
-            Glide.with(context).load(albums.get(position).getPath())
+            Glide.with(context).load(Albums.get(position).getPath())
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .placeholder(R.drawable.ic_launcher_foreground)
                     .centerCrop().into(holder.imgAlbum);
 
-            holder.nameAlbum.setText(albums.get(position).getName());
+            holder.nameAlbum.setText(Albums.get(position).getName());
 
             return convertView;
         }

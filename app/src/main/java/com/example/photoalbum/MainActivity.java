@@ -28,6 +28,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.photoalbum.db.PhotoAlbumService;
 import com.example.photoalbum.ui.AlbumFragment;
+import com.example.photoalbum.ui.CategoryFragment;
 import com.example.photoalbum.ui.FavoriteFragment;
 import com.example.photoalbum.ui.GalleryFragment;
 import com.example.photoalbum.ui.RecycleBinFragment;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawerLayout;
 
     int id = R.id.nav_gallery;
+    final int R_id_category = 10;
 
     ActivityResultLauncher<Intent> cameraActivityLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -114,6 +116,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onResume();
         Fragment fragment = new GalleryFragment();
 
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        if (bundle != null) id = R_id_category;
+
         // Previous fragment
         switch (id){
             case R.id.nav_album:
@@ -124,6 +130,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_recycle_bin:
                 fragment = new RecycleBinFragment();
+                break;
+            case R_id_category:
+                fragment = new CategoryFragment();
+
+                String Path = bundle.getString("Path");
+                String Name = bundle.getString("Name");
+
+                Bundle myBundle = new Bundle();
+                myBundle.putString("Path", Path);
+                myBundle.putString("Name", Name);
+                fragment.setArguments(myBundle);
                 break;
             default:
                 fragment = new GalleryFragment();
